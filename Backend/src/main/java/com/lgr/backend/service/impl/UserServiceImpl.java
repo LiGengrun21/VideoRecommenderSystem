@@ -1,6 +1,9 @@
 package com.lgr.backend.service.impl;
 
+import com.lgr.backend.model.collection.User;
 import com.lgr.backend.service.UserService;
+import com.lgr.backend.util.Result;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -9,4 +12,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl implements UserService {
+
 }

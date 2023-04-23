@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.mongodb.core.mapping.Document;
+//import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author Li Gengrun
@@ -31,7 +31,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Data
 @Builder
-@Document(collection = "Movie")
+//@Document(collection = "Movie")
 @JsonInclude(JsonInclude.Include.NON_NULL) //不要传null去前端，但可以传0或空串。实体类转化为json时，值为null的属性不会被转换
 public class Movie {
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.mongodb.core.mapping.Document;
+//import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author Li Gengrun
@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Data
 @Builder
-@Document(collection = "Comment")
+//@Document(collection = "Comment")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Comment {
 
