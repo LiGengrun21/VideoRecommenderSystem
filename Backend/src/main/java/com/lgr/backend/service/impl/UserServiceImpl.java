@@ -1,5 +1,6 @@
 package com.lgr.backend.service.impl;
 
+import com.lgr.backend.model.Response.ShowUserProfileResponse;
 import com.lgr.backend.model.collection.User;
 import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.model.request.RegisterRequest;
@@ -36,5 +37,24 @@ public class UserServiceImpl implements UserService {
             return Result.FAIL("注册用户失败");
         }
         return Result.SUCCESS(newUser);
+    }
+
+    @Override
+    public Result getUserInfo(int userId) {
+        User user=userRepository.getUserById(userId);
+        if (user==null){
+            return Result.FAIL("找不到用户");
+        }
+        return Result.SUCCESS(user);
+    }
+
+    @Override
+    public Result updateProfile(User user) {
+        User userResult=userRepository.getUserById(user.getUserId());
+        if (userResult==null){
+            return Result.FAIL("找不到这个用户，用户ID为"+user.getUserId());
+        }
+        userRepository.update(user);
+        return Result.SUCCESS(user);
     }
 }

@@ -1,5 +1,6 @@
 package com.lgr.backend.controller;
 
+import com.lgr.backend.model.collection.User;
 import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.model.request.RegisterRequest;
 import com.lgr.backend.service.UserService;
@@ -33,6 +34,20 @@ public class UserController {
     @PostMapping("/register")
     public Result userRegister(RegisterRequest registerRequest){
         return userService.register(registerRequest);
+    }
+
+    @Operation(summary = "显示用户个人信息")
+    @ResponseBody
+    @GetMapping("/profile")
+    public Result showUserProfile(int userId){
+        return userService.getUserInfo(userId);
+    }
+
+    @Operation(summary = "修改用户个人信息")
+    @ResponseBody
+    @PutMapping("/profile")
+    public Result updateUserProfile(User user){
+        return userService.updateProfile(user);
     }
 
 

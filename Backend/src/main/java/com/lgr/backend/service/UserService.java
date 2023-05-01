@@ -15,4 +15,8 @@ public interface UserService {
     Result login(LoginRequest loginRequest);
 
     Result register(RegisterRequest registerRequest);
+
+    Result getUserInfo(int userId);
+
+    Result updateProfile(User user);
 }

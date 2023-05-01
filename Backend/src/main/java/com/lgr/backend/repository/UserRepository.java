@@ -1,13 +1,15 @@
 package com.lgr.backend.repository;
 
-import com.lgr.backend.model.collection.Admin;
 import com.lgr.backend.model.collection.User;
 import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.model.request.RegisterRequest;
-import com.lgr.backend.util.Result;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -96,5 +98,20 @@ public class UserRepository {
     private int getUserNumber(){
         MongoCollection<Document> collection = mongoDatabase.getCollection("User");
         return (int) collection.count();
+    }
+
+    public int update(User user){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("User");
+        // 创建查询条件
+        Bson filter = Filters.eq("userId", user.getUserId());
+        Bson update = Updates.combine(
+                Updates.set("username", user.getUsername()),
+                Updates.set("password",user.getPassword()),
+                Updates.set("email",user.getEmail()),
+                Updates.set("avatar",user.getAvatar()),
+                Updates.set("deleted",(double)user.getDeleted())
+        );
+        UpdateResult result = collection.updateOne(filter, update);
+        return (int)result.getModifiedCount();
     }
 }
