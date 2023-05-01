@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Li Gengrun
  * @date 2023/4/18 10:16
  */
-@Tag(name="User",description = "用户管理")
+@Tag(name="User",description = "用户模块")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -34,6 +34,8 @@ public class UserController {
     public Result userRegister(RegisterRequest registerRequest){
         return userService.register(registerRequest);
     }
+
+
 
 
 //    @Operation(summary = "添加一个用户",description = "登录后访问")

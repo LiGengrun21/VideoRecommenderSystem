@@ -1,6 +1,7 @@
 package com.lgr.backend.repository;
 
 import com.lgr.backend.model.collection.Admin;
+import com.lgr.backend.model.request.LoginRequest;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -91,6 +92,30 @@ public class AdminRepository {
         admin.setPassword(result.getString("password"));
         admin.setDeleted((int) result.getDouble("deleted").doubleValue());
         admin.setAvatar(result.getString("avatar"));
+        admin.setPermission((int) result.getDouble("permission").doubleValue());
+        return admin;
+    }
+
+    public Admin login(LoginRequest loginRequest){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Admin");
+        Document query = new Document("email", loginRequest.getEmail())
+                .append("password",loginRequest.getPassword());
+        Document result = collection.find(query).first();
+        if (result==null){
+            return null;
+        }
+        //如果已经被逻辑删除，则返回空
+        if (result.getDouble("deleted") ==1){
+            return null;
+        }
+        Admin admin=new Admin();
+        //注意：数据库存的是double类型，加入admin之前转回int
+        admin.setAdminId((int) result.getDouble("adminId").doubleValue());
+        admin.setAdminName(result.getString("adminName"));
+        admin.setPassword(result.getString("password"));
+        admin.setEmail(result.getString("email"));
+        admin.setAvatar(result.getString("avatar"));
+        admin.setDeleted((int) result.getDouble("deleted").doubleValue());
         admin.setPermission((int) result.getDouble("permission").doubleValue());
         return admin;
     }

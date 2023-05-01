@@ -1,6 +1,7 @@
 package com.lgr.backend.controller;
 
 import com.lgr.backend.model.collection.Admin;
+import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.service.AdminService;
 import com.lgr.backend.util.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Li Gengrun
  * @date 2023/4/18 12:36
  */
-@Tag(name="Admin",description = "管理员管理")
+@Tag(name="Admin",description = "管理员模块")
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -58,5 +59,12 @@ public class AdminController {
     @PutMapping("/adminId")
     public Result updateAdmin(Admin admin){
         return adminService.update(admin);
+    }
+
+    @Operation(summary = "管理员登录")
+    @ResponseBody
+    @GetMapping("/login")
+    public Result adminLogin(LoginRequest loginRequest){
+        return adminService.login(loginRequest);
     }
 }

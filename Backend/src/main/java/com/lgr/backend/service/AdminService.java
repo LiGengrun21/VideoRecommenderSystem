@@ -1,6 +1,7 @@
 package com.lgr.backend.service;
 
 import com.lgr.backend.model.collection.Admin;
+import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.util.Result;
 import org.springframework.stereotype.Service;
 
@@ -27,4 +28,6 @@ public interface AdminService {
     Result findExistedAdminById(int adminId);
 
     Result update(Admin admin);
+
+    Result login(LoginRequest loginRequest);
 }

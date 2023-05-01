@@ -1,6 +1,7 @@
 package com.lgr.backend.service.impl;
 
 import com.lgr.backend.model.collection.Admin;
+import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.repository.AdminRepository;
 import com.lgr.backend.service.AdminService;
 import com.lgr.backend.util.Result;
@@ -73,6 +74,15 @@ public class AdminServiceImpl implements AdminService {
             return Result.FAIL("不存在这个adminId的管理员，id为"+admin.getAdminId());
         }
         adminRepository.update(admin);
+        return Result.SUCCESS(admin);
+    }
+
+    @Override
+    public Result login(LoginRequest loginRequest) {
+        Admin admin=adminRepository.login(loginRequest);
+        if (admin==null){
+            return Result.FAIL("邮箱地址或密码错误");
+        }
         return Result.SUCCESS(admin);
     }
 }

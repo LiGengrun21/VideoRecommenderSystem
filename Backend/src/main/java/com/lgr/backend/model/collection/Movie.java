@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
-//import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author Li Gengrun
@@ -29,8 +28,8 @@ import lombok.Data;
  *   "picture": ""
  * }
  */
-@Data
-@Builder
+//@Data
+//@Builder
 //@Document(collection = "Movie")
 @JsonInclude(JsonInclude.Include.NON_NULL) //不要传null去前端，但可以传0或空串。实体类转化为json时，值为null的属性不会被转换
 public class Movie {
@@ -70,4 +69,128 @@ public class Movie {
 //     * 或者根据movieId从TopRated collection 里查询
 //     */
 //    private Double score;
+
+
+    public Movie() {
+    }
+
+    public Movie(String _id, int movieId, String name, String description, String duration, String releaseDate, String shootDate, String language, String genre, String actor, String director, String video, String picture) {
+        this._id = _id;
+        this.movieId = movieId;
+        this.name = name;
+        this.description = description;
+        this.duration = duration;
+        this.releaseDate = releaseDate;
+        this.shootDate = shootDate;
+        this.language = language;
+        this.genre = genre;
+        this.actor = actor;
+        this.director = director;
+        this.video = video;
+        this.picture = picture;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public int getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public String getShootDate() {
+        return shootDate;
+    }
+
+    public void setShootDate(String shootDate) {
+        this.shootDate = shootDate;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getActor() {
+        return actor;
+    }
+
+    public void setActor(String actor) {
+        this.actor = actor;
+    }
+
+    public String getDirector() {
+        return director;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
 }
