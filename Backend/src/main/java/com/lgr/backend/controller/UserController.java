@@ -6,9 +6,14 @@ import com.lgr.backend.model.request.RegisterRequest;
 import com.lgr.backend.service.UserService;
 import com.lgr.backend.util.Result;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Li Gengrun
@@ -43,11 +48,18 @@ public class UserController {
         return userService.getUserInfo(userId);
     }
 
-    @Operation(summary = "修改用户个人信息")
+    @Operation(summary = "修改用户个人信息",description = "本接口不修改图片，文件上传使用单独的接口")
     @ResponseBody
     @PutMapping("/profile")
     public Result updateUserProfile(User user){
         return userService.updateProfile(user);
+    }
+
+    @Operation(summary = "上传用户头像",description = "从本地选择文件，上传到本地的特定位置，即：存储在本地的nginx静态资源服务器")
+    @ResponseBody
+    @PostMapping(value ="/profile/upload/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result updateUserAvatar(@RequestParam("userId") int userId, @RequestParam("userAvatar") MultipartFile file){
+        return userService.uploadUserAvatar(userId,file);
     }
 
 

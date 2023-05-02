@@ -5,6 +5,7 @@ import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.model.request.RegisterRequest;
 import com.lgr.backend.util.Result;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Li Gengrun
@@ -19,4 +20,6 @@ public interface UserService {
     Result getUserInfo(int userId);
 
     Result updateProfile(User user);
+
+    Result uploadUserAvatar(int userId, MultipartFile file);
 }

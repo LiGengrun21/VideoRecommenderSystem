@@ -9,6 +9,12 @@ import com.lgr.backend.service.UserService;
 import com.lgr.backend.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Li Gengrun
@@ -54,6 +60,31 @@ public class UserServiceImpl implements UserService {
         if (userResult==null){
             return Result.FAIL("找不到这个用户，用户ID为"+user.getUserId());
         }
+        userRepository.update(user);
+        return Result.SUCCESS(user);
+    }
+
+    /**
+     *   http://localhost:8099/userAvatars/default.jpg 数据库存储图片地址样例
+     *   D://WebServer//resources//userAvatars//default.jpg 图像本地存储的地址
+     * @param userId
+     * @param file
+     * @return
+     */
+    @Override
+    public Result uploadUserAvatar(int userId, MultipartFile file) {
+
+        String fileName="user"+userId+".jpg";
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get("D:\\WebServer\\resources\\userAvatars\\" + fileName);
+            Files.write(path, bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //图片上传成功后，还要更新数据库，将这个user的图片地址修改为新的地址
+        User user=userRepository.getUserById(userId);
+        user.setAvatar("http://localhost:8099/userAvatars/"+fileName);
         userRepository.update(user);
         return Result.SUCCESS(user);
     }
