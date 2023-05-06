@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name="Movie",description = "视频模块")
 @RestController
 @RequestMapping("/movie")
+@CrossOrigin("*")
 public class MovieController {
     @Autowired
     private MovieService movieService;
@@ -22,7 +23,7 @@ public class MovieController {
     @Operation(summary = "电影模糊搜索", description = "通过视频（电影）名称搜索")
     @ResponseBody
     @GetMapping("/search")
-    public Result searchMovies(String string){
+    public Result searchMovies(@RequestParam("movieName") String string){
         return movieService.searchMovies(string);
     }
 
@@ -33,14 +34,14 @@ public class MovieController {
         return movieService.getMovieInfo(movieId);
     }
 
-    @Operation(summary = "获取个性化推荐结果",description = "在首页使用")
+    @Operation(summary = "获取个性化推荐结果",description = "返回20部电影")
     @ResponseBody
     @GetMapping("/recommendation/cf")
     public Result getCFRec(@RequestParam("userId") int userId){
         return movieService.getCFRec(userId);
     }
 
-    @Operation(summary = "获取最多评价的推荐结果",description = "在首页使用")
+    @Operation(summary = "获取最多评价的推荐结果",description = "返回6部电影")
     @ResponseBody
     @GetMapping("/recommendation/mostViewed")
     public Result getMostViewedRec(){
@@ -54,7 +55,7 @@ public class MovieController {
 //        return movieService.getRecentlyMostViewedRec();
 //    }
 
-    @Operation(summary = "获取最高评分的推荐结果",description = "在首页使用")
+    @Operation(summary = "获取最高评分的推荐结果",description = "返回6部电影")
     @ResponseBody
     @GetMapping("/recommendation/topRated")
     public Result getTopRatedRec(){

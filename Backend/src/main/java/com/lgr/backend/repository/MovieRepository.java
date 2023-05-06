@@ -48,7 +48,14 @@ public class MovieRepository {
             MovieDisplay movieDisplay=new MovieDisplay();
             movieDisplay.setMovieId(document.getInteger("movieId"));
             movieDisplay.setMovieName(document.getString("name"));
-            movieDisplay.setPictureUrl(document.getString("picture"));
+            //数据库读到空地址，则填入默认地址
+            String picture=(document.getString("picture"));
+            if (picture==null || picture.isEmpty()){
+                movieDisplay.setPictureUrl("https://images.unsplash.com/photo-1522770179533-24471fcdba45");
+            }
+            else{
+                movieDisplay.setPictureUrl(picture);
+            }
             movieDisplayList.add(movieDisplay);
         }
         return movieDisplayList;
@@ -76,23 +83,17 @@ public class MovieRepository {
             Document movieDocument = collection1.find(query1).first();
             movieDisplay.setMovieId(movieDocument.getInteger("movieId"));
             movieDisplay.setMovieName(movieDocument.getString("name"));
-            movieDisplay.setPictureUrl(movieDocument.getString("picture"));
+            //数据库读到空地址，则填入默认地址
+            String picture=(document.getString("picture"));
+//            System.out.println(picture);
+            if (picture==null || picture.isEmpty()){
+                movieDisplay.setPictureUrl("https://images.unsplash.com/photo-1522770179533-24471fcdba45");
+            }
+            else{
+                movieDisplay.setPictureUrl(picture);
+            }
             movieDisplayList.add(movieDisplay);
         }
-
-//        while (cursor.hasNext()) {
-//            MovieDisplay movieDisplay=new MovieDisplay();
-//            // 获取下一个文档
-//            Document document = cursor.next();
-//            // 根据movieId查询电影名称和图片
-//            int movieId=document.getInteger("movieId");
-//            Document query1 = new Document("movieId", movieId);
-//            Document movieDocument=collection1.find(query1).first();
-//            movieDisplay.setMovieId(movieDocument.getInteger("movieId"));
-//            movieDisplay.setMovieName(movieDocument.getString("name"));
-//            movieDisplay.setPictureUrl(movieDocument.getString("picture"));
-//            movieDisplayList.add(movieDisplay);
-//        }
         return movieDisplayList;
     }
 
@@ -122,7 +123,15 @@ public class MovieRepository {
             Document movieDocument = collection2.find(query).first();
             movieDisplay.setMovieId(movieDocument.getInteger("movieId"));
             movieDisplay.setMovieName(movieDocument.getString("name"));
-            movieDisplay.setPictureUrl(movieDocument.getString("picture"));
+            //数据库读到空地址，则填入默认地址
+            String picture=(document.getString("picture"));
+//            System.out.println(picture);
+            if (picture==null || picture.isEmpty()){
+                movieDisplay.setPictureUrl("https://images.unsplash.com/photo-1522770179533-24471fcdba45");
+            }
+            else{
+                movieDisplay.setPictureUrl(picture);
+            }
             movieDisplayList.add(movieDisplay);
         }
         return movieDisplayList;
@@ -154,7 +163,15 @@ public class MovieRepository {
             Document movieDocument = collection3.find(query).first();
             movieDisplay.setMovieId(movieDocument.getInteger("movieId"));
             movieDisplay.setMovieName(movieDocument.getString("name"));
-            movieDisplay.setPictureUrl(movieDocument.getString("picture"));
+            //数据库读到空地址，则填入默认地址
+            String picture=(document.getString("picture"));
+//            System.out.println(picture);
+            if (picture==null || picture.isEmpty()){
+                movieDisplay.setPictureUrl("https://images.unsplash.com/photo-1522770179533-24471fcdba45");
+            }
+            else{
+                movieDisplay.setPictureUrl(picture);
+            }
             movieDisplayList.add(movieDisplay);
         }
         return movieDisplayList;
