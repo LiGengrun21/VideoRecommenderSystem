@@ -4,6 +4,7 @@ import com.lgr.backend.model.Display.MovieDisplay;
 import com.lgr.backend.model.collection.Movie;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
@@ -55,11 +56,44 @@ public class MovieRepository {
 
     /**
      * 个性化推荐
+     *
      * @param userId
      * @return
      */
     public List<MovieDisplay> getCFRec(int userId){
-        return null;
+        List<MovieDisplay> movieDisplayList = new ArrayList<>();
+        MongoCollection<Document> collection = mongoDatabase.getCollection("RecommendationResults");
+        MongoCollection<Document> collection1 = mongoDatabase.getCollection("Movie");
+        Document query = new Document("userId", userId);
+        Document document = collection.find(query).first();
+        //获取推荐数组
+        List<Document> recs = (List<Document>) document.get("recs");
+        for (Document rec : recs) {
+            MovieDisplay movieDisplay=new MovieDisplay();
+            int movieId=rec.getInteger("movieId");
+            movieDisplay.setMovieId(movieId);
+            Document query1 = new Document("movieId", movieId);
+            Document movieDocument = collection1.find(query1).first();
+            movieDisplay.setMovieId(movieDocument.getInteger("movieId"));
+            movieDisplay.setMovieName(movieDocument.getString("name"));
+            movieDisplay.setPictureUrl(movieDocument.getString("picture"));
+            movieDisplayList.add(movieDisplay);
+        }
+
+//        while (cursor.hasNext()) {
+//            MovieDisplay movieDisplay=new MovieDisplay();
+//            // 获取下一个文档
+//            Document document = cursor.next();
+//            // 根据movieId查询电影名称和图片
+//            int movieId=document.getInteger("movieId");
+//            Document query1 = new Document("movieId", movieId);
+//            Document movieDocument=collection1.find(query1).first();
+//            movieDisplay.setMovieId(movieDocument.getInteger("movieId"));
+//            movieDisplay.setMovieName(movieDocument.getString("name"));
+//            movieDisplay.setPictureUrl(movieDocument.getString("picture"));
+//            movieDisplayList.add(movieDisplay);
+//        }
+        return movieDisplayList;
     }
 
     /**
@@ -86,6 +120,38 @@ public class MovieRepository {
             int movieId=document.getInteger("movieId");
             Document query = new Document("movieId", movieId);
             Document movieDocument = collection2.find(query).first();
+            movieDisplay.setMovieId(movieDocument.getInteger("movieId"));
+            movieDisplay.setMovieName(movieDocument.getString("name"));
+            movieDisplay.setPictureUrl(movieDocument.getString("picture"));
+            movieDisplayList.add(movieDisplay);
+        }
+        return movieDisplayList;
+    }
+
+    /**
+     * 最高评价的6部电影
+     *
+     * @return
+     */
+    public List<MovieDisplay> getTopRatedRec(){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("TopRated");
+        //查询movieId最小的6个影片(movieId, average)
+        List<Document> results=collection.aggregate(
+                Arrays.asList(
+                        new Document("$sort", new Document("movieId", 1)),
+                        new Document("$limit", 6)
+                )
+        ).into(new ArrayList<>());
+
+        List<MovieDisplay> movieDisplayList = new ArrayList<>();
+        //根据movieId查询movieName和picture
+        MongoCollection<Document> collection3 = mongoDatabase.getCollection("Movie");
+        for (Document document : results) {
+            MovieDisplay movieDisplay=new MovieDisplay();
+            //根据movieId查询电影名和图片
+            int movieId=document.getInteger("movieId");
+            Document query = new Document("movieId", movieId);
+            Document movieDocument = collection3.find(query).first();
             movieDisplay.setMovieId(movieDocument.getInteger("movieId"));
             movieDisplay.setMovieName(movieDocument.getString("name"));
             movieDisplay.setPictureUrl(movieDocument.getString("picture"));

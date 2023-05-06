@@ -56,7 +56,11 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Result getCFRec(int userId) {
-        return null;
+        List<MovieDisplay> movieDisplayList=movieRepository.getCFRec(userId);
+        if (movieDisplayList==null||movieDisplayList.isEmpty()){
+            return Result.FAIL("查询不到视频");
+        }
+        return Result.SUCCESS(movieDisplayList);
     }
 
     @Override
@@ -75,6 +79,10 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Result getTopRatedRec() {
-        return null;
+        List<MovieDisplay> movieDisplayList=movieRepository.getTopRatedRec();
+        if (movieDisplayList==null||movieDisplayList.isEmpty()){
+            return Result.FAIL("查询不到视频");
+        }
+        return Result.SUCCESS(movieDisplayList);
     }
 }

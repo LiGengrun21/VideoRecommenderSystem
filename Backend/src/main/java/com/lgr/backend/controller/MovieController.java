@@ -47,12 +47,12 @@ public class MovieController {
         return movieService.getMostViewedRec();
     }
 
-    @Operation(summary = "获取最近最多评价的推荐结果",description = "在首页使用")
-    @ResponseBody
-    @GetMapping("/recommendation/recentlyMostViewed")
-    public Result getRecentlyMostViewedRec(){
-        return movieService.getRecentlyMostViewedRec();
-    }
+//    @Operation(summary = "获取最近最多评价的推荐结果",description = "在首页使用")
+//    @ResponseBody
+//    @GetMapping("/recommendation/recentlyMostViewed")
+//    public Result getRecentlyMostViewedRec(){
+//        return movieService.getRecentlyMostViewedRec();
+//    }
 
     @Operation(summary = "获取最高评分的推荐结果",description = "在首页使用")
     @ResponseBody
