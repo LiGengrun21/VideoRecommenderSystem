@@ -22,4 +22,6 @@ public interface UserService {
     Result updateProfile(User user);
 
     Result uploadUserAvatar(int userId, MultipartFile file);
+
+    Result getUserAvatarById(int userId);
 }

@@ -8,6 +8,8 @@ package com.lgr.backend.model.Display;
  */
 public class MovieDisplay {
 
+    private int movieId;
+
     private String movieName;
 
     private String pictureUrl;
@@ -15,7 +17,8 @@ public class MovieDisplay {
     public MovieDisplay() {
     }
 
-    public MovieDisplay(String movieName, String pictureUrl) {
+    public MovieDisplay(int movieId, String movieName, String pictureUrl) {
+        this.movieId = movieId;
         this.movieName = movieName;
         this.pictureUrl = pictureUrl;
     }
@@ -34,5 +37,13 @@ public class MovieDisplay {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
+    }
+
+    public int getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 }

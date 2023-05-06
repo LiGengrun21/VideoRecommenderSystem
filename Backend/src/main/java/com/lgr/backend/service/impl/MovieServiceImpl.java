@@ -61,7 +61,11 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Result getMostViewedRec() {
-        return null;
+        List<MovieDisplay> movieDisplayList=movieRepository.getMostViewedRec();
+        if (movieDisplayList==null||movieDisplayList.isEmpty()){
+            return Result.FAIL("查询不到视频");
+        }
+        return Result.SUCCESS(movieDisplayList);
     }
 
     @Override

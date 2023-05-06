@@ -1,6 +1,5 @@
 package com.lgr.backend.service.impl;
 
-import com.lgr.backend.model.Response.ShowUserProfileResponse;
 import com.lgr.backend.model.collection.User;
 import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.model.request.RegisterRequest;
@@ -37,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result register(RegisterRequest registerRequest) {
+        /**
+         * 这里没有考虑邮箱重复注册的问题
+         */
         int registerId= userRepository.register(registerRequest);
         User newUser=userRepository.getUserById(registerId);
         if (newUser==null){
@@ -87,5 +89,10 @@ public class UserServiceImpl implements UserService {
         user.setAvatar("http://localhost:8099/userAvatars/"+fileName);
         userRepository.update(user);
         return Result.SUCCESS(user);
+    }
+
+    @Override
+    public Result getUserAvatarById(int userId) {
+        return null;
     }
 }

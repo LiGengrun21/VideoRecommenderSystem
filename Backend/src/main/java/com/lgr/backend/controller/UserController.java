@@ -6,9 +6,6 @@ import com.lgr.backend.model.request.RegisterRequest;
 import com.lgr.backend.service.UserService;
 import com.lgr.backend.util.Result;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name="User",description = "用户模块")
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = "*")
 public class UserController {
-
     @Autowired
     private UserService userService;
 
@@ -31,6 +28,7 @@ public class UserController {
     @ResponseBody
     @GetMapping("/login")
     public Result userLogin(LoginRequest loginRequest){
+        System.out.println("接收到的数据:"+loginRequest.getEmail()+loginRequest.getPassword());
         return userService.login(loginRequest);
     }
 
@@ -44,7 +42,7 @@ public class UserController {
     @Operation(summary = "显示用户个人信息")
     @ResponseBody
     @GetMapping("/profile")
-    public Result showUserProfile(int userId){
+    public Result showUserProfile(@RequestParam("userId") int userId){
         return userService.getUserInfo(userId);
     }
 
@@ -61,6 +59,13 @@ public class UserController {
     public Result updateUserAvatar(@RequestParam("userId") int userId, @RequestParam("userAvatar") MultipartFile file){
         return userService.uploadUserAvatar(userId,file);
     }
+
+//    @Operation(summary = "根据userId获取头像地址")
+//    @ResponseBody
+//    @GetMapping("/userAvatar")
+//    public Result getUserAvatarById(int userId){
+//        return userService.getUserAvatarById(userId);
+//    }
 
 
 

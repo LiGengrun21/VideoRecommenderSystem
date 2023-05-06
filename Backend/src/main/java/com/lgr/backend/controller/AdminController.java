@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name="Admin",description = "管理员模块")
 @RestController
 @RequestMapping("/admin")
+@CrossOrigin(origins = "*")
 public class AdminController {
 
     @Autowired

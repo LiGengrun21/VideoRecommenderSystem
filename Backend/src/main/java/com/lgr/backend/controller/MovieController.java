@@ -36,7 +36,7 @@ public class MovieController {
     @Operation(summary = "获取个性化推荐结果",description = "在首页使用")
     @ResponseBody
     @GetMapping("/recommendation/cf")
-    public Result getCFRec(int userId){
+    public Result getCFRec(@RequestParam("userId") int userId){
         return movieService.getCFRec(userId);
     }
 

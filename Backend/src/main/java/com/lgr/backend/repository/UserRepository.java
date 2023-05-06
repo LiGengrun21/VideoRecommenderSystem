@@ -100,6 +100,11 @@ public class UserRepository {
         return (int) collection.count();
     }
 
+    /**
+     * 更新用户信息
+     * @param user
+     * @return
+     */
     public int update(User user){
         MongoCollection<Document> collection = mongoDatabase.getCollection("User");
         // 创建查询条件
