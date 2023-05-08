@@ -92,6 +92,33 @@ public class UserRepository {
     }
 
     /**
+     * 根据邮箱获取用户
+     *
+     * 运用在用户注册和用户信息修改
+     *
+     * 因为邮箱不能重复注册
+     * @param email
+     * @return
+     */
+    public User getUserByEmail(String email){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("User");
+        Document query = new Document("email", email);
+        Document result = collection.find(query).first();
+        if (result == null) {
+            return null;
+        }
+        User user=new User();
+        //注意：数据库存的是double类型，加入admin之前转回int
+        user.setUserId((int)result.getDouble("userId").doubleValue());
+        user.setUsername(result.getString("username"));
+        user.setEmail(result.getString("email"));
+        user.setPassword(result.getString("password"));
+        user.setDeleted((int) result.getDouble("deleted").doubleValue());
+        user.setAvatar(result.getString("avatar"));
+        return user;
+    }
+
+    /**
      * 获取User集合里文档的总数
      * @return 文档数
      */

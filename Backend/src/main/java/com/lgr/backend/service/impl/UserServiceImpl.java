@@ -36,9 +36,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result register(RegisterRequest registerRequest) {
-        /**
-         * 这里没有考虑邮箱重复注册的问题
-         */
+
+        //注册前先判断邮箱是否存在
+        String newEmail=registerRequest.getEmail();//获取新邮箱
+        //将新邮箱传进入，如果返回空，说明新邮箱合法
+        if (userRepository.getUserByEmail(newEmail)!=null){
+            return Result.FAIL("邮箱已存在，注册用户失败");
+        }
         int registerId= userRepository.register(registerRequest);
         User newUser=userRepository.getUserById(registerId);
         if (newUser==null){
@@ -61,6 +65,11 @@ public class UserServiceImpl implements UserService {
         User userResult=userRepository.getUserById(user.getUserId());
         if (userResult==null){
             return Result.FAIL("找不到这个用户，用户ID为"+user.getUserId());
+        }
+        String newEmail=user.getEmail();//获取新邮箱
+        //将新邮箱传进入，如果返回空，说明新邮箱合法
+        if (userRepository.getUserByEmail(newEmail)!=null){
+            return Result.FAIL("邮箱已存在，修改用户信息失败");
         }
         userRepository.update(user);
         return Result.SUCCESS(user);
