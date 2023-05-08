@@ -50,9 +50,9 @@ public class UserController {
     @ResponseBody
     @PutMapping("/profile")
     public Result updateUserProfile(User user){
-        System.out.println(user.getUserId());
-        System.out.println(user.getEmail());
-        System.out.println(user.getUsername());
+//        System.out.println(user.getUserId());
+//        System.out.println(user.getEmail());
+//        System.out.println(user.getUsername());
         return userService.updateProfile(user);
     }
 

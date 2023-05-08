@@ -29,4 +29,8 @@ public interface MovieService {
     Result getRecentlyMostViewedRec();
 
     Result getTopRatedRec();
+
+    Result updateMoviePictureUrl(int movieId, String picture);
+
+    Result updateMovieVideo(int movieId, String video);
 }

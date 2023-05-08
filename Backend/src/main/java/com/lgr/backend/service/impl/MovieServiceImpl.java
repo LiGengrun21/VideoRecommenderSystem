@@ -46,7 +46,12 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Result update(Movie movie) {
-        return null;
+        Movie movieResult=movieRepository.getMovieById(movie.getMovieId());
+        if (movieResult==null){
+            return Result.FAIL("找不到电影,ID:"+movieResult.getMovieId());
+        }
+        movieRepository.updateMovie(movie);
+        return Result.SUCCESS(movie);
     }
 
     @Override
@@ -84,5 +89,31 @@ public class MovieServiceImpl implements MovieService {
             return Result.FAIL("查询不到视频");
         }
         return Result.SUCCESS(movieDisplayList);
+    }
+
+    @Override
+    public Result updateMoviePictureUrl(int movieId, String picture) {
+        Movie movie=movieRepository.getMovieById(movieId);
+        System.out.println(movie.getMovieId()+movie.getDescription());
+        if (movie==null) {
+            return Result.FAIL("找不到这个电影，ID为"+movieId);
+        }
+        //修改电影照片地址
+        movie.setPicture(picture);
+        movieRepository.updateMovie(movie);
+        return Result.SUCCESS(movie);
+    }
+
+    @Override
+    public Result updateMovieVideo(int movieId, String video) {
+        Movie movie=movieRepository.getMovieById(movieId);
+        System.out.println(movie.getMovieId()+movie.getDescription());
+        if (movie==null) {
+            return Result.FAIL("找不到这个电影，ID为"+movieId);
+        }
+        //修改视频地址
+        movie.setVideo(video);
+        movieRepository.updateMovie(movie);
+        return Result.SUCCESS(movie);
     }
 }

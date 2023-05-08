@@ -90,4 +90,22 @@ public class MovieController {
         return movieService.getMovieList();
     }
 
+    /**
+     * 我自己调用的接口，在网站里不调用
+     *
+     */
+    @Operation(summary = "给特定ID的电影修改图片地址",description = "我自己调用的，网站里不调用")
+    @ResponseBody
+    @PutMapping("/developer/picture")
+    public Result updateMoviePictureUrl(@RequestParam("movieId") int movieId, @RequestParam("picture") String picture){
+        return movieService.updateMoviePictureUrl(movieId,picture);
+    }
+
+    @Operation(summary = "给特定ID的电影修改视频地址",description = "我自己调用的，网站里不调用")
+    @ResponseBody
+    @PutMapping("/developer/video")
+    public Result updateMovieVideo(@RequestParam("movieId") int movieId, @RequestParam("video") String video){
+        return movieService.updateMovieVideo(movieId,video);
+    }
+
 }

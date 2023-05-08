@@ -2,13 +2,17 @@ package com.lgr.backend.repository;
 
 import com.lgr.backend.model.Display.MovieDisplay;
 import com.lgr.backend.model.collection.Movie;
+import com.lgr.backend.model.collection.User;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -50,7 +54,7 @@ public class MovieRepository {
             movieDisplay.setMovieName(document.getString("name"));
             //数据库读到空地址，则填入默认地址
             String picture=(document.getString("picture"));
-            if (picture==null || picture.isEmpty()){
+            if (picture==null || picture=="" || picture.isEmpty()){
                 movieDisplay.setPictureUrl("https://images.unsplash.com/photo-1522770179533-24471fcdba45");
             }
             else{
@@ -84,9 +88,9 @@ public class MovieRepository {
             movieDisplay.setMovieId(movieDocument.getInteger("movieId"));
             movieDisplay.setMovieName(movieDocument.getString("name"));
             //数据库读到空地址，则填入默认地址
-            String picture=(document.getString("picture"));
-//            System.out.println(picture);
-            if (picture==null || picture.isEmpty()){
+            String picture=(movieDocument.getString("picture"));
+            System.out.println("CFRec picture:"+picture);
+            if (picture==null || picture=="" ||picture.isEmpty()){
                 movieDisplay.setPictureUrl("https://images.unsplash.com/photo-1522770179533-24471fcdba45");
             }
             else{
@@ -124,9 +128,9 @@ public class MovieRepository {
             movieDisplay.setMovieId(movieDocument.getInteger("movieId"));
             movieDisplay.setMovieName(movieDocument.getString("name"));
             //数据库读到空地址，则填入默认地址
-            String picture=(document.getString("picture"));
-//            System.out.println(picture);
-            if (picture==null || picture.isEmpty()){
+            String picture=(movieDocument.getString("picture"));
+            System.out.println("MostViewedRec picture:"+picture);
+            if (picture==null || picture=="" ||picture.isEmpty()){
                 movieDisplay.setPictureUrl("https://images.unsplash.com/photo-1522770179533-24471fcdba45");
             }
             else{
@@ -164,9 +168,9 @@ public class MovieRepository {
             movieDisplay.setMovieId(movieDocument.getInteger("movieId"));
             movieDisplay.setMovieName(movieDocument.getString("name"));
             //数据库读到空地址，则填入默认地址
-            String picture=(document.getString("picture"));
-//            System.out.println(picture);
-            if (picture==null || picture.isEmpty()){
+            String picture=(movieDocument.getString("picture"));
+            System.out.println("TopRated picture:"+picture);
+            if (picture==null || picture=="" ||picture.isEmpty()){
                 movieDisplay.setPictureUrl("https://images.unsplash.com/photo-1522770179533-24471fcdba45");
             }
             else{
@@ -175,5 +179,50 @@ public class MovieRepository {
             movieDisplayList.add(movieDisplay);
         }
         return movieDisplayList;
+    }
+
+    public Movie getMovieById(int movieId){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Movie");
+        Document query = new Document("movieId", movieId);
+        Document result = collection.find(query).first();
+        if (result == null) {
+            return null;
+        }
+        Movie movie=new Movie();
+        //movie里int存得是正常的
+        movie.setMovieId(result.getInteger("movieId"));
+        movie.setName(result.getString("name"));
+        movie.setDescription(result.getString("description"));
+        movie.setDuration(result.getString("duration"));
+        movie.setReleaseDate(result.getString("releaseDate"));
+        movie.setShootDate(result.getString("shootDate"));
+        movie.setLanguage(result.getString("language"));
+        movie.setGenre(result.getString("genre"));
+        movie.setActor(result.getString("actor"));
+        movie.setDirector(result.getString("director"));
+        movie.setVideo(result.getString("video"));
+        movie.setPicture(result.getString("picture"));
+        return movie;
+    }
+
+    public int updateMovie(Movie movie) {
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Movie");
+        // 创建查询条件
+        Bson filter = Filters.eq("movieId", movie.getMovieId());
+        Bson update = Updates.combine(
+                Updates.set("name", movie.getName()),
+                Updates.set("description",movie.getDescription()),
+                Updates.set("duration",movie.getDuration()),
+                Updates.set("releaseDate",movie.getReleaseDate()),
+                Updates.set("shootDate",movie.getShootDate()),
+                Updates.set("language",movie.getLanguage()),
+                Updates.set("genre",movie.getGenre()),
+                Updates.set("actor",movie.getActor()),
+                Updates.set("director",movie.getDirector()),
+                Updates.set("video",movie.getVideo()),
+                Updates.set("picture",movie.getPicture())
+        );
+        UpdateResult result = collection.updateOne(filter, update);
+        return (int)result.getModifiedCount();
     }
 }
