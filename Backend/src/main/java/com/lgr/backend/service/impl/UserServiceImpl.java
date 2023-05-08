@@ -67,12 +67,15 @@ public class UserServiceImpl implements UserService {
             return Result.FAIL("找不到这个用户，用户ID为"+user.getUserId());
         }
         String newEmail=user.getEmail();//获取新邮箱
-        //将新邮箱传进入，如果返回空，说明新邮箱合法
-        if (userRepository.getUserByEmail(newEmail)!=null){
+        User user1=userRepository.getUserByEmail(newEmail);//根据新邮箱查到的用户
+        //如果返回空或者返回的是自己，说明新邮箱合法
+        if (user1==null || user1.getUserId()==user.getUserId()){
+            userRepository.update(user);
+            return Result.SUCCESS(user);
+        }
+        else {
             return Result.FAIL("邮箱已存在，修改用户信息失败");
         }
-        userRepository.update(user);
-        return Result.SUCCESS(user);
     }
 
     /**
