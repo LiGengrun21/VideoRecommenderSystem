@@ -4,6 +4,7 @@ import com.lgr.backend.model.collection.Admin;
 import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.util.Result;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,4 +31,6 @@ public interface AdminService {
     Result update(Admin admin);
 
     Result login(LoginRequest loginRequest);
+
+    Result uploadAdminAvatar(int adminId, MultipartFile file);
 }

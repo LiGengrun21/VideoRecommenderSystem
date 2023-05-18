@@ -27,10 +27,10 @@ public class MovieController {
         return movieService.searchMovies(string);
     }
 
-    @Operation(summary = "根据ID获取电影信息",description = "在搜索页面和首页里点击电影，跳转到电影详情页，使用本接口获取改电影的数据,然后展示")
+    @Operation(summary = "根据ID获取电影信息",description = "在搜索页面和首页里点击电影，跳转到电影详情页，使用本接口获取改电影的数据,然后展示；或者在视频详情页里获取电影信息以及资源")
     @ResponseBody
     @GetMapping("/info")
-    public Result getMovieInfo(int movieId){
+    public Result getMovieInfo(@RequestParam("movieId") int movieId){
         return movieService.getMovieInfo(movieId);
     }
 
@@ -106,6 +106,20 @@ public class MovieController {
     @PutMapping("/developer/video")
     public Result updateMovieVideo(@RequestParam("movieId") int movieId, @RequestParam("video") String video){
         return movieService.updateMovieVideo(movieId,video);
+    }
+
+    @Operation(summary = "用户给电影评分",description = "给Rating集合添加新数据")
+    @ResponseBody
+    @PutMapping("/rating")
+    public Result rateMovie(@RequestParam("userId") int userId, @RequestParam("movieId") int movieId){
+        return movieService.rateMovie(userId, movieId);
+    }
+
+    @Operation(summary = "视频页面展示平均分")
+    @ResponseBody
+    @GetMapping("/rating")
+    public Result getMovieAverageScore(@RequestParam("movieId") int movieId){
+        return movieService.getMovieAverageScore(movieId);
     }
 
 }

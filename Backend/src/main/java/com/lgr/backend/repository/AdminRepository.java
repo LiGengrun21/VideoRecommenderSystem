@@ -1,6 +1,7 @@
 package com.lgr.backend.repository;
 
 import com.lgr.backend.model.collection.Admin;
+import com.lgr.backend.model.collection.User;
 import com.lgr.backend.model.request.LoginRequest;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -117,6 +118,26 @@ public class AdminRepository {
         admin.setAvatar(result.getString("avatar"));
         admin.setDeleted((int) result.getDouble("deleted").doubleValue());
         admin.setPermission((int) result.getDouble("permission").doubleValue());
+        return admin;
+    }
+
+    public Admin getAdminByEmail(String newEmail) {
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Admin");
+        Document query = new Document("email", newEmail);
+        Document result = collection.find(query).first();
+        if (result == null) {
+            return null;
+        }
+        Admin admin=new Admin();
+        //注意：数据库存的是double类型，加入admin之前转回int
+        admin.setAdminId((int) result.getDouble("adminId").doubleValue());
+        admin.setAdminName(result.getString("adminName"));
+        admin.setPassword(result.getString("password"));
+        admin.setEmail(result.getString("email"));
+        admin.setAvatar(result.getString("avatar"));
+        admin.setDeleted((int) result.getDouble("deleted").doubleValue());
+        admin.setPermission((int) result.getDouble("permission").doubleValue());
+
         return admin;
     }
 }

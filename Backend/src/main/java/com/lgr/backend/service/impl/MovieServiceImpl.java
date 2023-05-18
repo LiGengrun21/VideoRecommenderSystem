@@ -29,9 +29,25 @@ public class MovieServiceImpl implements MovieService {
         return Result.SUCCESS(movieDisplayList);
     }
 
+    /**
+     * 视频详情页调用，所以要处理默认视频资源
+     * @param movieId
+     * @return
+     */
     @Override
     public Result getMovieInfo(int movieId) {
-        return null;
+        Movie movie=movieRepository.getMovieById(movieId);
+        if (movie==null){
+            return Result.FAIL("找不到电影，ID为"+movieId);
+        }
+
+        //如果视频字段是空，要添加默认资源
+        String video= movie.getVideo();
+        System.out.println("视频资源"+video);
+        if (video==null || video=="" ||video.isEmpty()){
+            movie.setVideo("http://localhost:8099/videos/default.mp4");
+        }
+        return Result.SUCCESS(movie);
     }
 
     @Override
@@ -115,5 +131,19 @@ public class MovieServiceImpl implements MovieService {
         movie.setVideo(video);
         movieRepository.updateMovie(movie);
         return Result.SUCCESS(movie);
+    }
+
+    @Override
+    public Result rateMovie(int userId, int movieId) {
+        return null;
+    }
+
+    @Override
+    public Result getMovieAverageScore(int movieId) {
+        double score=movieRepository.getMovieScore(movieId);
+        if (score==0){
+            return Result.FAIL("找不到这个电影，ID为："+movieId+"，或者是有的电影没有被评价");
+        }
+        return Result.SUCCESS(score);
     }
 }

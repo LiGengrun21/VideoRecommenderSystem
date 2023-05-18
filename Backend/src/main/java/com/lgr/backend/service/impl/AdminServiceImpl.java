@@ -1,6 +1,7 @@
 package com.lgr.backend.service.impl;
 
 import com.lgr.backend.model.collection.Admin;
+import com.lgr.backend.model.collection.User;
 import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.repository.AdminRepository;
 import com.lgr.backend.service.AdminService;
@@ -12,7 +13,12 @@ import com.mongodb.spark.sql.fieldTypes.api.java.ObjectId;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -73,8 +79,17 @@ public class AdminServiceImpl implements AdminService {
         if (adminResult==null){
             return Result.FAIL("不存在这个adminId的管理员，id为"+admin.getAdminId());
         }
-        adminRepository.update(admin);
-        return Result.SUCCESS(admin);
+
+        String newEmail=admin.getEmail();//获取新邮箱
+        Admin admin1=adminRepository.getAdminByEmail(newEmail);
+        //如果返回空或者返回的是自己，说明新邮箱合法
+        if (admin1==null || admin1.getAdminId()==admin.getAdminId()){
+            adminRepository.update(admin);
+            return Result.SUCCESS(admin);
+        }
+        else {
+            return Result.FAIL("邮箱已存在，修改管理员信息失败");
+        }
     }
 
     @Override
@@ -83,6 +98,26 @@ public class AdminServiceImpl implements AdminService {
         if (admin==null){
             return Result.FAIL("邮箱地址或密码错误");
         }
+        return Result.SUCCESS(admin);
+    }
+
+    @Override
+    public Result uploadAdminAvatar(int adminId, MultipartFile file) {
+        String fileName="admin"+adminId+".jpg";
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get("D:\\WebServer\\resources\\adminAvatars\\" + fileName);
+            Files.write(path, bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //图片上传成功后，还要更新数据库，将这个admin的图片地址修改为新的地址
+        Admin admin=adminRepository.getAdminById(adminId);
+        if (admin.getDeleted()==1){
+            return Result.FAIL("管理员已经被删除，ID为:"+adminId);
+        }
+        admin.setAvatar("http://localhost:8099/adminAvatars/"+fileName);
+        adminRepository.update(admin);
         return Result.SUCCESS(admin);
     }
 }

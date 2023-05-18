@@ -6,8 +6,11 @@ import com.lgr.backend.service.AdminService;
 import com.lgr.backend.util.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Li Gengrun
@@ -31,7 +34,7 @@ public class AdminController {
 
     @Operation(summary = "根据id查询存在的管理员",description = "考虑逻辑删除")
     @ResponseBody
-    @GetMapping("/adminId/existed")
+    @GetMapping("/existed/adminId")
     public Result getExistedAdminById(int adminId){
         return adminService.findExistedAdminById(adminId);
     }
@@ -67,5 +70,12 @@ public class AdminController {
     @GetMapping("/login")
     public Result adminLogin(LoginRequest loginRequest){
         return adminService.login(loginRequest);
+    }
+
+    @Operation(summary = "上传管理员头像")
+    @ResponseBody
+    @PostMapping(value ="/upload/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result uploadAdminAvatar(@RequestParam("adminId") int adminId, @RequestParam("adminAvatar") MultipartFile file){
+        return adminService.uploadAdminAvatar(adminId, file);
     }
 }

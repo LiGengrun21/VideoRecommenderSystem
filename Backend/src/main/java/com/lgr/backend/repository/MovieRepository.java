@@ -2,7 +2,9 @@ package com.lgr.backend.repository;
 
 import com.lgr.backend.model.Display.MovieDisplay;
 import com.lgr.backend.model.collection.Movie;
+import com.lgr.backend.model.collection.Rating;
 import com.lgr.backend.model.collection.User;
+import com.lgr.backend.util.Result;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -79,6 +81,9 @@ public class MovieRepository {
         Document document = collection.find(query).first();
         //获取推荐数组
         List<Document> recs = (List<Document>) document.get("recs");
+        if (recs==null){
+            return null; //有的用户没有任何评分记录，所以没有个性化推荐
+        }
         for (Document rec : recs) {
             MovieDisplay movieDisplay=new MovieDisplay();
             int movieId=rec.getInteger("movieId");
@@ -89,7 +94,7 @@ public class MovieRepository {
             movieDisplay.setMovieName(movieDocument.getString("name"));
             //数据库读到空地址，则填入默认地址
             String picture=(movieDocument.getString("picture"));
-            System.out.println("CFRec picture:"+picture);
+            //System.out.println("CFRec picture:"+picture);
             if (picture==null || picture=="" ||picture.isEmpty()){
                 movieDisplay.setPictureUrl("https://images.unsplash.com/photo-1522770179533-24471fcdba45");
             }
@@ -129,7 +134,7 @@ public class MovieRepository {
             movieDisplay.setMovieName(movieDocument.getString("name"));
             //数据库读到空地址，则填入默认地址
             String picture=(movieDocument.getString("picture"));
-            System.out.println("MostViewedRec picture:"+picture);
+            //System.out.println("MostViewedRec picture:"+picture);
             if (picture==null || picture=="" ||picture.isEmpty()){
                 movieDisplay.setPictureUrl("https://images.unsplash.com/photo-1522770179533-24471fcdba45");
             }
@@ -169,7 +174,7 @@ public class MovieRepository {
             movieDisplay.setMovieName(movieDocument.getString("name"));
             //数据库读到空地址，则填入默认地址
             String picture=(movieDocument.getString("picture"));
-            System.out.println("TopRated picture:"+picture);
+            //System.out.println("TopRated picture:"+picture);
             if (picture==null || picture=="" ||picture.isEmpty()){
                 movieDisplay.setPictureUrl("https://images.unsplash.com/photo-1522770179533-24471fcdba45");
             }
@@ -224,5 +229,67 @@ public class MovieRepository {
         );
         UpdateResult result = collection.updateOne(filter, update);
         return (int)result.getModifiedCount();
+    }
+
+    /**
+     * 从TopRated表里获取评分
+     * @param movieId
+     * @return
+     */
+    public double getMovieScore(int movieId){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("TopRated");
+        Document query = new Document("movieId", movieId);
+        Document result = collection.find(query).first();
+        //找不到电影
+        if (result == null) {
+            return 0;
+        }
+        return result.getDouble("average");
+    }
+
+    /**
+     * 更新评分
+     *
+     * @param rating
+     * @return
+     */
+    public Rating updateRating(Rating rating){
+//        MongoCollection<Document> collection = mongoDatabase.getCollection("Rating");
+//        Document query = new Document("movieId", rating.getMovieId()).
+//                append("userId",rating.getUserId());
+//        Document result = collection.find(query).first();
+//        //用户没有对这个电影的评分记录
+//        if (result == null) {
+//            //添加评分
+//            return null;
+//        }
+//        //修改score
+//        Rating rating=new Rating();
+//        rating.setMovieId(result.getInteger("movieId"));
+//        rating.setUserId(result.getInteger("userId"));
+//        rating.setScore(result.getInteger("score"));
+//        return rating;
+        return null;
+    }
+
+    /**
+     * 第一次评分
+     *
+     * @param rating
+     * @return
+     */
+    public Rating addRating(Rating rating){
+        return null;
+    }
+
+    /**
+     * 查询用户对电影的评分
+     *
+     * @param movieId
+     * @param userId
+     * @return
+     */
+    public Rating getRatingByIds(int movieId, int userId){
+        return null;
     }
 }

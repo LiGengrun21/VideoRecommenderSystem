@@ -33,4 +33,8 @@ public interface MovieService {
     Result updateMoviePictureUrl(int movieId, String picture);
 
     Result updateMovieVideo(int movieId, String video);
+
+    Result rateMovie(int userId, int movieId);
+
+    Result getMovieAverageScore(int movieId);
 }
