@@ -122,7 +122,7 @@ public class UserRepository {
      * 获取User集合里文档的总数
      * @return 文档数
      */
-    private int getUserNumber(){
+    public int getUserNumber(){
         MongoCollection<Document> collection = mongoDatabase.getCollection("User");
         return (int) collection.count();
     }

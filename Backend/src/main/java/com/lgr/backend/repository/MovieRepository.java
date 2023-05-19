@@ -1,5 +1,6 @@
 package com.lgr.backend.repository;
 
+import com.lgr.backend.model.Display.MovieCount;
 import com.lgr.backend.model.Display.MovieDisplay;
 import com.lgr.backend.model.collection.Movie;
 import com.lgr.backend.model.collection.Rating;

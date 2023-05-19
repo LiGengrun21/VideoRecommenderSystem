@@ -78,4 +78,46 @@ public class AdminController {
     public Result uploadAdminAvatar(@RequestParam("adminId") int adminId, @RequestParam("adminAvatar") MultipartFile file){
         return adminService.uploadAdminAvatar(adminId, file);
     }
+
+    @Operation(summary = "控制台获取管理员人数")
+    @ResponseBody
+    @GetMapping("/number/admin")
+    public Result getAdminNumber(){
+        return adminService.getAdminNumber();
+    }
+
+    @Operation(summary = "控制台获取用户人数")
+    @ResponseBody
+    @GetMapping("/number/user")
+    public Result getUserNumber(){
+        return adminService.getUserNumber();
+    }
+
+    @Operation(summary = "控制台获取电影数")
+    @ResponseBody
+    @GetMapping("/number/movie")
+    public Result getMovieNumber(){
+        return adminService.getMovieNumber();
+    }
+
+    @Operation(summary = "控制台获取评价数")
+    @ResponseBody
+    @GetMapping("/number/rating")
+    public Result getRatingNumber(){
+        return adminService.getRatingNumber();
+    }
+
+    @Operation(summary = "管理员获取20个最多评价的电影")
+    @ResponseBody
+    @GetMapping("/mostRated")
+    public Result getMovieMostViewedData(){
+        return adminService.getMovieMostViewedData();
+    }
+
+    @Operation(summary = "管理员获取电影评分在各个区间的数量")
+    @ResponseBody
+    @GetMapping("/topRated")
+    public Result getMovieTopRatedData(){
+        return adminService.getMovieTopRatedData();
+    }
 }

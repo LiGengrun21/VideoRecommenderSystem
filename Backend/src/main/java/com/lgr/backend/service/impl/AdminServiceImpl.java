@@ -120,4 +120,34 @@ public class AdminServiceImpl implements AdminService {
         adminRepository.update(admin);
         return Result.SUCCESS(admin);
     }
+
+    @Override
+    public Result getAdminNumber() {
+        return Result.SUCCESS(adminRepository.getAdminNumber());
+    }
+
+    @Override
+    public Result getUserNumber() {
+        return Result.SUCCESS(adminRepository.getUserNumber());
+    }
+
+    @Override
+    public Result getMovieNumber() {
+        return Result.SUCCESS(adminRepository.getMovieNumber());
+    }
+
+    @Override
+    public Result getRatingNumber() {
+        return Result.SUCCESS(adminRepository.getRatingNumber());
+    }
+
+    @Override
+    public Result getMovieMostViewedData() {
+        return Result.SUCCESS(adminRepository.getMovieViewedData());
+    }
+
+    @Override
+    public Result getMovieTopRatedData() {
+        return Result.SUCCESS(adminRepository.getMovieTopRatedData());
+    }
 }

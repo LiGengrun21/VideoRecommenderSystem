@@ -1,7 +1,8 @@
 package com.lgr.backend.repository;
 
+import com.lgr.backend.model.Display.MovieCount;
+import com.lgr.backend.model.Display.MovieScore;
 import com.lgr.backend.model.collection.Admin;
-import com.lgr.backend.model.collection.User;
 import com.lgr.backend.model.request.LoginRequest;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -12,6 +13,8 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.*;
 
 /**
  * @author Li Gengrun
@@ -139,5 +142,87 @@ public class AdminRepository {
         admin.setPermission((int) result.getDouble("permission").doubleValue());
 
         return admin;
+    }
+
+    public int getUserNumber(){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("User");
+        return (int) collection.count();
+    }
+
+    public int getMovieNumber(){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Movie");
+        return (int) collection.count();
+    }
+
+    public int getAdminNumber(){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Admin");
+        return (int) collection.count();
+    }
+
+    public int getRatingNumber(){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Rating");
+        return (int) collection.count();
+    }
+
+    /**
+     * 最多评价的20部电影
+     *
+     * 用于管理系统
+     * @return
+     */
+    public List<MovieCount> getMovieViewedData(){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("MostViewed");
+        List<Document> results=collection.aggregate(
+                Arrays.asList(
+                        new Document("$sort", new Document("count", -1)),
+                        new Document("$limit", 20)
+                )
+        ).into(new ArrayList<>());
+
+        List<MovieCount> movieCountList=new ArrayList<>();
+        //根据movieId查询movieName
+        MongoCollection<Document> collection2 = mongoDatabase.getCollection("Movie");
+        for (Document document : results) {
+            MovieCount movieCount=new MovieCount();
+            //根据movieId查询电影名
+            int movieId=document.getInteger("movieId");
+            Document query = new Document("movieId", movieId);
+            Document movieDocument = collection2.find(query).first();
+            movieCount.setMovieName(movieDocument.getString("name"));
+            movieCount.setCount(document.getLong("count"));
+            movieCountList.add(movieCount);
+        }
+        return movieCountList;
+    }
+
+    /**
+     * 各个评分区间的数量
+     *
+     * 用于管理系统
+     * @return
+     */
+    public List<MovieScore> getMovieTopRatedData(){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("TopRated");
+        List<MovieScore> movieScoreList=new ArrayList<>();
+        //各个区间的数量
+        Document query1 = new Document("average", new Document("$gt", 4).append("$lte", 5));
+        Document query2 = new Document("average", new Document("$gt", 3).append("$lte", 4));
+        Document query3 = new Document("average", new Document("$gt", 2).append("$lte", 3));
+        Document query4 = new Document("average", new Document("$gt", 1).append("$lte", 2));
+        Document query5 = new Document("average", new Document("$gt", 0).append("$lte", 1));
+        long count1 = collection.count(query1);
+        long count2 = collection.count(query2);
+        long count3 = collection.count(query3);
+        long count4 = collection.count(query4);
+        long count5 = collection.count(query5);
+        long [] counts={count1,count2,count3,count4,count5};
+        String[] intervals={"4.0~5.0","3.0~4.0","2.0~3.0","1.0~2.0","0.0~1.0"};
+        for (int i=0;i<=4;i++){
+            MovieScore movieScore=new MovieScore();
+            movieScore.setScoreInterval(intervals[i]);
+            movieScore.setNumber((int)counts[i]);//强制转化为int
+            movieScoreList.add(movieScore);
+        }
+        return movieScoreList;
     }
 }

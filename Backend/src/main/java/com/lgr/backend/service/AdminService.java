@@ -33,4 +33,16 @@ public interface AdminService {
     Result login(LoginRequest loginRequest);
 
     Result uploadAdminAvatar(int adminId, MultipartFile file);
+
+    Result getAdminNumber();
+
+    Result getUserNumber();
+
+    Result getMovieNumber();
+
+    Result getRatingNumber();
+
+    Result getMovieMostViewedData();
+
+    Result getMovieTopRatedData();
 }
