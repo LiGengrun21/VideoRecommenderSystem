@@ -6,7 +6,9 @@ import com.lgr.backend.util.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Li Gengrun
@@ -48,13 +50,6 @@ public class MovieController {
         return movieService.getMostViewedRec();
     }
 
-//    @Operation(summary = "获取最近最多评价的推荐结果",description = "在首页使用")
-//    @ResponseBody
-//    @GetMapping("/recommendation/recentlyMostViewed")
-//    public Result getRecentlyMostViewedRec(){
-//        return movieService.getRecentlyMostViewedRec();
-//    }
-
     @Operation(summary = "获取最高评分的推荐结果",description = "返回6部电影")
     @ResponseBody
     @GetMapping("/recommendation/topRated")
@@ -69,43 +64,11 @@ public class MovieController {
         return movieService.add(movie);
     }
 
-//    @Operation(summary = "逻辑删除一个电影",description = "视频管理功能")
-//    @ResponseBody
-//    @DeleteMapping
-//    public Result delete(int movieId){
-//        return movieService.logicDelete(movieId);
-//    }
-
-    @Operation(summary = "管理员更新一个电影",description = "视频管理功能")
-    @ResponseBody
-    @PutMapping
-    public Result update(Movie movie){
-        return movieService.update(movie);
-    }
-
     @Operation(summary = "管理员获取电影列表",description = "视频管理功能")
     @ResponseBody
     @GetMapping("/list")
     public Result getMovieList(){
         return movieService.getMovieList();
-    }
-
-    /**
-     * 我自己调用的接口，在网站里不调用
-     *
-     */
-    @Operation(summary = "给特定ID的电影修改图片地址",description = "我自己调用的，网站里不调用")
-    @ResponseBody
-    @PutMapping("/developer/picture")
-    public Result updateMoviePictureUrl(@RequestParam("movieId") int movieId, @RequestParam("picture") String picture){
-        return movieService.updateMoviePictureUrl(movieId,picture);
-    }
-
-    @Operation(summary = "给特定ID的电影修改视频地址",description = "我自己调用的，网站里不调用")
-    @ResponseBody
-    @PutMapping("/developer/video")
-    public Result updateMovieVideo(@RequestParam("movieId") int movieId, @RequestParam("video") String video){
-        return movieService.updateMovieVideo(movieId,video);
     }
 
     @Operation(summary = "用户给电影评分",description = "给Rating集合添加新数据")
@@ -122,4 +85,43 @@ public class MovieController {
         return movieService.getMovieAverageScore(movieId);
     }
 
+    @Operation(summary = "管理员更新一个电影的信息",description = "只能修改文字，不上传文件资源")
+    @ResponseBody
+    @PutMapping("/info")
+    public Result update(Movie movie){
+        return movieService.update(movie);
+    }
+
+    @Operation(summary = "上传视频电影视频资源",description = "在电影管理中使用")
+    @ResponseBody
+    @PostMapping(value = "/video",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result uploadVideo(@RequestParam("movieId") int movieId, @RequestParam("movieVideo") MultipartFile file){
+        return movieService.uploadVideo(movieId,file);
+    }
+
+    @Operation(summary = "上传视频电影图片",description = "在电影管理中使用")
+    @ResponseBody
+    @PostMapping(value = "/picture",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result uploadPicture(@RequestParam("movieId") int movieId, @RequestParam("moviePicture") MultipartFile file){
+        return movieService.uploadPicture(movieId,file);
+    }
+
+
+    /**
+     * 我自己调用的接口，在网站里不调用
+     *
+     */
+    @Operation(summary = "给特定ID的电影修改图片地址",description = "我自己调用的，网站里不调用")
+    @ResponseBody
+    @PutMapping(value = "/developer/picture")
+    public Result updateMoviePictureUrl(@RequestParam("movieId") int movieId, @RequestParam("picture") String picture){
+        return movieService.updateMoviePictureUrl(movieId,picture);
+    }
+
+    @Operation(summary = "给特定ID的电影修改视频地址",description = "我自己调用的，网站里不调用")
+    @ResponseBody
+    @PutMapping("/developer/video")
+    public Result updateMovieVideo(@RequestParam("movieId") int movieId, @RequestParam("video") String video){
+        return movieService.updateMovieVideo(movieId,video);
+    }
 }

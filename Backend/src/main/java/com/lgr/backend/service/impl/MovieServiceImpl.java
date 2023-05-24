@@ -2,12 +2,18 @@ package com.lgr.backend.service.impl;
 
 import com.lgr.backend.model.Display.MovieDisplay;
 import com.lgr.backend.model.collection.Movie;
+import com.lgr.backend.model.collection.User;
 import com.lgr.backend.repository.MovieRepository;
 import com.lgr.backend.service.MovieService;
 import com.lgr.backend.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -43,7 +49,7 @@ public class MovieServiceImpl implements MovieService {
 
         //如果视频字段是空，要添加默认资源
         String video= movie.getVideo();
-        System.out.println("视频资源"+video);
+//        System.out.println("视频资源"+video);
         if (video==null || video=="" ||video.isEmpty()){
             movie.setVideo("http://localhost:8099/videos/default.mp4");
         }
@@ -54,11 +60,6 @@ public class MovieServiceImpl implements MovieService {
     public Result add(Movie movie) {
         return null;
     }
-
-//    @Override
-//    public Result logicDelete(int movieId) {
-//        return null;
-//    }
 
     @Override
     public Result update(Movie movie) {
@@ -149,5 +150,53 @@ public class MovieServiceImpl implements MovieService {
             return Result.FAIL("找不到这个电影，ID为："+movieId+"，或者是有的电影没有被评价");
         }
         return Result.SUCCESS(score);
+    }
+
+    /**
+     * http://localhost:8099/videos/1.mp4 数据库存储视频地址样例
+     * D://WebServer//resources//videos//1.mp4 视频本地存储的地址
+     * @param movieId
+     * @param file
+     * @return
+     */
+    @Override
+    public Result uploadVideo(int movieId, MultipartFile file) {
+        String fileName=movieId+".mp4";
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get("D:\\WebServer\\resources\\videos\\" + fileName);
+            Files.write(path, bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //视频上传成功后，还要更新数据库，将这个movie的视频地址修改为新的地址
+        Movie movie=movieRepository.getMovieById(movieId);
+        movie.setVideo("http://localhost:8099/videos/"+fileName);
+        movieRepository.updateMovie(movie);
+        return Result.SUCCESS(movie);
+    }
+
+    /**
+     * http://localhost:8099/images/1.jpg 数据库存储图片地址样例
+     * D://WebServer//resources//images//1.jpg 图像本地存储的地址
+     * @param movieId
+     * @param file
+     * @return
+     */
+    @Override
+    public Result uploadPicture(int movieId, MultipartFile file) {
+        String fileName=movieId+".jpg";
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get("D:\\WebServer\\resources\\images\\" + fileName);
+            Files.write(path, bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //图片上传成功后，还要更新数据库，将这个movie的图片地址修改为新的地址
+        Movie movie=movieRepository.getMovieById(movieId);
+        movie.setPicture("http://localhost:8099/images/"+fileName);
+        movieRepository.updateMovie(movie);
+        return Result.SUCCESS(movie);
     }
 }
