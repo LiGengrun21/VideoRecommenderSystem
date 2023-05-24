@@ -3,7 +3,10 @@ package com.lgr.backend.repository;
 import com.lgr.backend.model.Display.MovieCount;
 import com.lgr.backend.model.Display.MovieScore;
 import com.lgr.backend.model.collection.Admin;
+import com.lgr.backend.model.collection.User;
+import com.lgr.backend.model.request.AdminRegisterRequest;
 import com.lgr.backend.model.request.LoginRequest;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -26,20 +29,22 @@ public class AdminRepository {
     @Autowired
     private MongoDatabase mongoDatabase;
 
-    public int add(Admin admin){
+    public int add(AdminRegisterRequest admin){
         MongoCollection<Document> collection = mongoDatabase.getCollection("Admin");
+        //原因在于没有21，22，23号的adminId
+        int newId=getAdminNumber()+3+1; //得到新id
         //一个新的解决方案：加进去的前adminId转为double，保证mongo数据库数据类型的一致性
         //查询的时候，再转回int
         //注意：不光adminId要这样操作，permission和deleted在最初建表的时候也存成了double，操
-        Document document = new Document("adminId", (double)admin.getAdminId())
+        Document document = new Document("adminId", (double)newId)
                 .append("adminName", admin.getAdminName())
                 .append("password",admin.getPassword())
                 .append("email",admin.getEmail())
-                .append("avatar",admin.getAvatar())
-                .append("deleted",(double)admin.getDeleted())
-                .append("permission",(double)admin.getPermission());
+                .append("avatar","http://localhost:8099/adminAvatars/default.jpg")
+                .append("deleted",0.0)
+                .append("permission",0.0);
         collection.insertOne(document);
-        return admin.getAdminId();
+        return newId;
     }
 
     /**
@@ -224,5 +229,38 @@ public class AdminRepository {
             movieScoreList.add(movieScore);
         }
         return movieScoreList;
+    }
+
+    public List<Admin> getAdminList(){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Admin");
+        FindIterable<Document> result = collection.find();//查询全部文档
+        if (result == null) {
+            return null;
+        }
+        List<Admin> adminList=new ArrayList<>();
+        for (Document document : result) {
+            Admin admin=new Admin();
+            admin.setAdminId((int) document.getDouble("adminId").doubleValue());
+            admin.setAdminName(document.getString("adminName"));
+            admin.setPassword(document.getString("password"));
+            admin.setEmail(document.getString("email"));
+            admin.setAvatar(document.getString("avatar"));
+            admin.setDeleted((int) document.getDouble("deleted").doubleValue());
+            admin.setPermission((int) document.getDouble("permission").doubleValue());
+            adminList.add(admin);
+        }
+        return adminList;
+    }
+
+    public int recoverAdminById(int adminId) {
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Admin");
+        // 创建查询条件
+        Bson filter = Filters.eq("adminId", adminId);
+        // 创建更新操作
+        Bson update = Updates.set("deleted", (double)0);//为了保持数据一致性
+        // 执行更新操作
+        UpdateResult result = collection.updateOne(filter, update);
+        //返回实际更新的文档个数，若成功，应当返回1
+        return (int)result.getModifiedCount();
     }
 }

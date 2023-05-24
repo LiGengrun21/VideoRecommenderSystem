@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * @author Li Gengrun
@@ -104,7 +105,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result getUserAvatarById(int userId) {
-        return null;
+    public Result getUserList() {
+        List<User> userList=userRepository.getUserList();
+        if (userList==null){
+            return Result.FAIL("用户列表获取失败");
+        }
+        return Result.SUCCESS(userList);
+    }
+
+    /**
+     * 逻辑删除
+     * @param userId
+     * @return
+     */
+    @Override
+    public Result deleteUser(int userId) {
+        User user=userRepository.getUserById(userId);
+        if (user==null){
+            return Result.FAIL("不存在这个userId的管理员，id为"+userId);
+        }
+        if (user.getDeleted()==1){
+            return Result.FAIL("这个用户已经被逻辑删除了，id为"+userId);
+        }
+        //将deleted字段修改为1，返回userId
+        userRepository.logicDeleteUser(userId);
+        return Result.SUCCESS(userId);
+
+    }
+
+    @Override
+    public Result recoverUser(int userId) {
+        User user=userRepository.getUserById(userId);
+        if (user==null){
+            return Result.FAIL("不存在这个userId的管理员，id为"+userId);
+        }
+        if (user.getDeleted()==0){
+            return Result.FAIL("这个用户没有被逻辑删除，id为"+userId);
+        }
+        //将deleted字段修改为1，返回userId
+        userRepository.recoverUser(userId);
+        return Result.SUCCESS(userId);
     }
 }

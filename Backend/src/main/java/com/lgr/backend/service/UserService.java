@@ -7,6 +7,8 @@ import com.lgr.backend.util.Result;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * @author Li Gengrun
  * @date 2023/4/13 17:51
@@ -23,5 +25,9 @@ public interface UserService {
 
     Result uploadUserAvatar(int userId, MultipartFile file);
 
-    Result getUserAvatarById(int userId);
+    Result getUserList();
+
+    Result deleteUser(int userId);
+
+    Result recoverUser(int userId);
 }

@@ -1,6 +1,7 @@
 package com.lgr.backend.controller;
 
 import com.lgr.backend.model.collection.Admin;
+import com.lgr.backend.model.request.AdminRegisterRequest;
 import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.service.AdminService;
 import com.lgr.backend.util.Result;
@@ -41,16 +42,24 @@ public class AdminController {
 
     @Operation(summary = "添加一个管理员")
     @ResponseBody
-    @PostMapping("/adminId")
-    public Result addAdmin(Admin admin){
+    @PostMapping()
+    public Result addAdmin(AdminRegisterRequest admin){
         return adminService.add(admin);
     }
 
     @Operation(summary = "删除一个管理员",description = "逻辑删除，不是物理删除")
     @ResponseBody
-    @DeleteMapping("/adminId/logic")
-    public Result deleteAdmin(int adminId){
+    @DeleteMapping("/logic")
+    public Result deleteAdmin(@RequestParam("adminId") int adminId){
+        //System.out.println("controller:"+adminId);
         return adminService.LogicDeleteById(adminId);
+    }
+
+    @Operation(summary = "恢复一个被删除的管理员")
+    @ResponseBody
+    @DeleteMapping("/recover")
+    public Result recoverAdmin(@RequestParam("adminId") int adminId){
+        return adminService.recoverAdminById(adminId);
     }
 
     /**
@@ -60,7 +69,7 @@ public class AdminController {
      */
     @Operation(summary = "修改管理员信息")
     @ResponseBody
-    @PutMapping("/adminId")
+    @PutMapping()
     public Result updateAdmin(Admin admin){
         return adminService.update(admin);
     }
@@ -119,5 +128,12 @@ public class AdminController {
     @GetMapping("/topRated")
     public Result getMovieTopRatedData(){
         return adminService.getMovieTopRatedData();
+    }
+
+    @Operation(summary = "管理员列表",description="包括被删除的管理员")
+    @ResponseBody
+    @GetMapping("/list")
+    public Result getAdminList(){
+        return adminService.getAdminList();
     }
 }

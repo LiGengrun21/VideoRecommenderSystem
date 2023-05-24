@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * @author Li Gengrun
  * @date 2023/4/18 10:16
@@ -60,19 +62,24 @@ public class UserController {
         return userService.uploadUserAvatar(userId,file);
     }
 
-//    @Operation(summary = "根据userId获取头像地址")
-//    @ResponseBody
-//    @GetMapping("/userAvatar")
-//    public Result getUserAvatarById(int userId){
-//        return userService.getUserAvatarById(userId);
-//    }
+    @Operation(summary = "获取全部用户的列表",description = "包括注册用户和已被删除的用户")
+    @ResponseBody
+    @GetMapping("/list")
+    public Result getUserList(){
+        return userService.getUserList();
+    }
 
+    @Operation(summary = "删除用户",description = "逻辑删除")
+    @ResponseBody
+    @DeleteMapping("/logic")
+    public Result deleteUser(@RequestParam("userId") int userId){
+        return userService.deleteUser(userId);
+    }
 
-
-
-//    @Operation(summary = "添加一个用户",description = "登录后访问")
-//    @PostMapping
-//    public Result add(@RequestBody User user){
-//        return userService.add(user);
-//    }
+    @Operation(summary = "恢复用户")
+    @ResponseBody
+    @DeleteMapping("/recover")
+    public Result recoverUser(@RequestParam("userId") int userId){
+        return userService.recoverUser(userId);
+    }
 }

@@ -3,6 +3,7 @@ package com.lgr.backend.repository;
 import com.lgr.backend.model.collection.User;
 import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.model.request.RegisterRequest;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -12,6 +13,9 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Li Gengrun
@@ -144,6 +148,50 @@ public class UserRepository {
                 Updates.set("deleted",(double)user.getDeleted())
         );
         UpdateResult result = collection.updateOne(filter, update);
+        return (int)result.getModifiedCount();
+    }
+
+    public List<User> getUserList(){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("User");
+        FindIterable<Document> result = collection.find();//查询全部文档
+        if (result == null) {
+            return null;
+        }
+        List<User> userList=new ArrayList<>();
+        for (Document document : result) {
+            User user=new User();
+            user.setUserId((int)document.getDouble("userId").doubleValue());
+            user.setUsername(document.getString("username"));
+            user.setEmail(document.getString("email"));
+            user.setPassword(document.getString("password"));
+            user.setDeleted((int) document.getDouble("deleted").doubleValue());
+            user.setAvatar(document.getString("avatar"));
+            userList.add(user);
+        }
+        return userList;
+    }
+
+    public int logicDeleteUser(int userId) {
+        MongoCollection<Document> collection = mongoDatabase.getCollection("User");
+        // 创建查询条件
+        Bson filter = Filters.eq("userId", userId);
+        // 创建更新操作
+        Bson update = Updates.set("deleted", (double)1);//为了保持数据一致性
+        // 执行更新操作
+        UpdateResult result = collection.updateOne(filter, update);
+        //返回实际更新的文档个数，若成功，应当返回1
+        return (int)result.getModifiedCount();
+    }
+
+    public int recoverUser(int userId) {
+        MongoCollection<Document> collection = mongoDatabase.getCollection("User");
+        // 创建查询条件
+        Bson filter = Filters.eq("userId", userId);
+        // 创建更新操作
+        Bson update = Updates.set("deleted", (double)0);//为了保持数据一致性
+        // 执行更新操作
+        UpdateResult result = collection.updateOne(filter, update);
+        //返回实际更新的文档个数，若成功，应当返回1
         return (int)result.getModifiedCount();
     }
 }

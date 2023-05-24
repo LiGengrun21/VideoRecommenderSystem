@@ -1,6 +1,7 @@
 package com.lgr.backend.service;
 
 import com.lgr.backend.model.collection.Admin;
+import com.lgr.backend.model.request.AdminRegisterRequest;
 import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.util.Result;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,8 @@ public interface AdminService {
      * @param admin
      * @return
      */
-    Result add(Admin admin);
+    Result add(AdminRegisterRequest admin);
+
     List<Admin> getAllAdmins();
 
     Result findAdminById(int adminId);
@@ -45,4 +47,8 @@ public interface AdminService {
     Result getMovieMostViewedData();
 
     Result getMovieTopRatedData();
+
+    Result getAdminList();
+
+    Result recoverAdminById(int adminId);
 }

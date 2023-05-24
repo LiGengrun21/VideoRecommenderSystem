@@ -2,6 +2,7 @@ package com.lgr.backend.repository;
 
 import com.lgr.backend.model.Display.MovieCount;
 import com.lgr.backend.model.Display.MovieDisplay;
+import com.lgr.backend.model.collection.Admin;
 import com.lgr.backend.model.collection.Movie;
 import com.lgr.backend.model.collection.Rating;
 import com.lgr.backend.model.collection.User;
@@ -292,5 +293,32 @@ public class MovieRepository {
      */
     public Rating getRatingByIds(int movieId, int userId){
         return null;
+    }
+
+    public List<Movie> getMovieList(){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Movie");
+        FindIterable<Document> result = collection.find();//查询全部文档
+        if (result == null) {
+            return null;
+        }
+        List<Movie> movieList=new ArrayList<>();
+        for (Document document : result) {
+            Movie movie=new Movie();
+            //movie里int存得是正常的
+            movie.setMovieId(document.getInteger("movieId"));
+            movie.setName(document.getString("name"));
+            movie.setDescription(document.getString("description"));
+            movie.setDuration(document.getString("duration"));
+            movie.setReleaseDate(document.getString("releaseDate"));
+            movie.setShootDate(document.getString("shootDate"));
+            movie.setLanguage(document.getString("language"));
+            movie.setGenre(document.getString("genre"));
+            movie.setActor(document.getString("actor"));
+            movie.setDirector(document.getString("director"));
+            movie.setVideo(document.getString("video"));
+            movie.setPicture(document.getString("picture"));
+            movieList.add(movie);
+        }
+        return movieList;
     }
 }

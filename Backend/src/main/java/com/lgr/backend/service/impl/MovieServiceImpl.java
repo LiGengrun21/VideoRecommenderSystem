@@ -72,7 +72,11 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Result getMovieList() {
-        return null;
+        List<Movie> movieList=movieRepository.getMovieList();
+        if (movieList==null){
+            return Result.FAIL("获取电影列表失败");
+        }
+        return Result.SUCCESS(movieList);
     }
 
     @Override

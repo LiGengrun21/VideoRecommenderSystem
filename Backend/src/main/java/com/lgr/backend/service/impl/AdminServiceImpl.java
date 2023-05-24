@@ -2,6 +2,7 @@ package com.lgr.backend.service.impl;
 
 import com.lgr.backend.model.collection.Admin;
 import com.lgr.backend.model.collection.User;
+import com.lgr.backend.model.request.AdminRegisterRequest;
 import com.lgr.backend.model.request.LoginRequest;
 import com.lgr.backend.repository.AdminRepository;
 import com.lgr.backend.service.AdminService;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,12 +33,25 @@ public class AdminServiceImpl implements AdminService {
     private AdminRepository adminRepository;
 
     @Override
-    public Result add(Admin admin) {
-        //原集合里没有这个ID，可以插入
-       if (adminRepository.getAdminById(admin.getAdminId())==null){
-           return Result.SUCCESS(adminRepository.add(admin));
-       }
-       return Result.FAIL("集合里已经存在"+admin.getAdminId());
+    public Result add(AdminRegisterRequest admin) {
+//        //原集合里没有这个ID，可以插入
+//       if (adminRepository.getAdminById(admin.getAdminId())==null){
+//           return Result.SUCCESS(adminRepository.add(admin));
+//       }
+//       return Result.FAIL("集合里已经存在"+admin.getAdminId());
+
+        //注册前先判断邮箱是否存在
+        String newEmail=admin.getEmail();
+        //将新邮箱传进入，如果返回空，说明新邮箱合法
+        if (adminRepository.getAdminByEmail(newEmail)!=null){
+            return Result.FAIL("邮箱已存在，注册管理员失败");
+        }
+        int registerId= adminRepository.add(admin);
+        Admin newAdmin=adminRepository.getAdminById(registerId);
+        if (newAdmin==null){
+            return Result.FAIL("注册管理员失败");
+        }
+        return Result.SUCCESS(newAdmin);
     }
 
     @Override
@@ -47,20 +62,6 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Result findAdminById(int adminId) {
         return Result.SUCCESS(adminRepository.getAdminById(adminId));
-    }
-
-    @Override
-    public Result LogicDeleteById(int adminId) {
-        Admin admin=adminRepository.getAdminById(adminId);
-        if (admin==null){
-            return Result.FAIL("不存在这个adminId的管理员，id为"+adminId);
-        }
-        if (admin.getDeleted()==1){
-            return Result.FAIL("这个管理员已经被逻辑删除了，id为"+adminId);
-        }
-        //将deleted字段修改为1，返回aminId
-        adminRepository.logicDeleteById(adminId);
-        return Result.SUCCESS(adminId);
     }
 
     @Override
@@ -149,5 +150,42 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Result getMovieTopRatedData() {
         return Result.SUCCESS(adminRepository.getMovieTopRatedData());
+    }
+
+    @Override
+    public Result getAdminList() {
+        List<Admin> adminList=adminRepository.getAdminList();
+        if (adminList==null){
+            return Result.FAIL("管理员列表获取失败");
+        }
+        return Result.SUCCESS(adminList);
+    }
+
+    @Override
+    public Result LogicDeleteById(int adminId) {
+        Admin admin=adminRepository.getAdminById(adminId);
+        if (admin==null){
+            return Result.FAIL("不存在这个adminId的管理员，id为"+adminId);
+        }
+        if (admin.getDeleted()==1){
+            return Result.FAIL("这个管理员已经被逻辑删除了，id为"+adminId);
+        }
+        //将deleted字段修改为1，返回aminId
+        adminRepository.logicDeleteById(adminId);
+        return Result.SUCCESS(adminId);
+    }
+
+    @Override
+    public Result recoverAdminById(int adminId) {
+        Admin admin=adminRepository.getAdminById(adminId);
+        if (admin==null){
+            return Result.FAIL("不存在这个管理员，ID为"+adminId);
+        }
+        if (admin.getDeleted()==0){
+            return Result.FAIL("这个管理员没有被逻辑删除，id为"+adminId);
+        }
+        //将deleted修改为0
+        adminRepository.recoverAdminById(adminId);
+        return Result.SUCCESS(adminId);
     }
 }
