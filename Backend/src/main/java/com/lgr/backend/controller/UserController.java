@@ -30,7 +30,7 @@ public class UserController {
     @ResponseBody
     @GetMapping("/login")
     public Result userLogin(LoginRequest loginRequest){
-        System.out.println("接收到的数据:"+loginRequest.getEmail()+loginRequest.getPassword());
+        //System.out.println("接收到的数据:"+loginRequest.getEmail()+loginRequest.getPassword());
         return userService.login(loginRequest);
     }
 

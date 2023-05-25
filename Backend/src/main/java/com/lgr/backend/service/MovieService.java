@@ -1,6 +1,7 @@
 package com.lgr.backend.service;
 
 import com.lgr.backend.model.collection.Movie;
+import com.lgr.backend.model.collection.Rating;
 import com.lgr.backend.util.Result;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,8 +17,6 @@ public interface MovieService {
     Result getMovieInfo(int movieId);
 
     Result add(Movie movie);
-
-//    Result logicDelete(int movieId);
 
     Result update(Movie movie);
 
@@ -35,11 +34,13 @@ public interface MovieService {
 
     Result updateMovieVideo(int movieId, String video);
 
-    Result rateMovie(int userId, int movieId);
+    Result rateMovie(Rating rating);
 
     Result getMovieAverageScore(int movieId);
 
     Result uploadVideo(int movieId, MultipartFile file);
 
     Result uploadPicture(int movieId, MultipartFile file);
+
+    Result getMovieScoreByUser(int userId, int movieId);
 }

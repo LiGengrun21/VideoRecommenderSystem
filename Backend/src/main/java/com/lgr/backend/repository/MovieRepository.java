@@ -234,7 +234,7 @@ public class MovieRepository {
     }
 
     /**
-     * 从TopRated表里获取评分
+     * 从TopRated表里获取平均分
      * @param movieId
      * @return
      */
@@ -250,49 +250,61 @@ public class MovieRepository {
     }
 
     /**
-     * 更新评分
-     *
-     * @param rating
-     * @return
-     */
-    public Rating updateRating(Rating rating){
-//        MongoCollection<Document> collection = mongoDatabase.getCollection("Rating");
-//        Document query = new Document("movieId", rating.getMovieId()).
-//                append("userId",rating.getUserId());
-//        Document result = collection.find(query).first();
-//        //用户没有对这个电影的评分记录
-//        if (result == null) {
-//            //添加评分
-//            return null;
-//        }
-//        //修改score
-//        Rating rating=new Rating();
-//        rating.setMovieId(result.getInteger("movieId"));
-//        rating.setUserId(result.getInteger("userId"));
-//        rating.setScore(result.getInteger("score"));
-//        return rating;
-        return null;
-    }
-
-    /**
-     * 第一次评分
-     *
-     * @param rating
-     * @return
-     */
-    public Rating addRating(Rating rating){
-        return null;
-    }
-
-    /**
-     * 查询用户对电影的评分
-     *
-     * @param movieId
+     * 根据用户ID和电影ID查询个人对电影的评分
      * @param userId
+     * @param movieId
      * @return
      */
-    public Rating getRatingByIds(int movieId, int userId){
-        return null;
+    public Rating getMovieScoreById(int userId, int movieId){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Rating");
+        Document query = new Document();
+        query.append("movieId",movieId);
+        query.append("userId",userId);
+        Document result = collection.find(query).first();
+        if (result==null){
+            return null;
+        }
+        Rating rating=new Rating();
+        rating.setUserId(result.getInteger("userId"));
+        rating.setMovieId(result.getInteger("movieId"));
+        rating.setScore(result.getDouble("score"));
+        rating.setTimeStamp(result.getInteger("timeStamp"));
+        return rating;
+    }
+
+    /**
+     * 添加评分记录
+     * @param rating
+     * @return 添加的评分
+     */
+    public double addScore(Rating rating){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Rating");
+        Document document = new Document("userId", rating.getUserId())
+                .append("movieId",rating.getMovieId())
+                .append("score",rating.getScore())
+                .append("timeStamp",(int) (System.currentTimeMillis() / 1000L));
+        collection.insertOne(document);
+        return rating.getScore();
+    }
+
+    /**
+     * 更新评分
+     * @param rating
+     * @return 被修改的行数
+     */
+    public int updateScore(Rating rating){
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Rating");
+        // 创建查询条件
+        Bson filter = Filters.and(
+                Filters.eq("userId",rating.getUserId()),
+                Filters.eq("movieId",rating.getMovieId())
+        );
+        Bson update = Updates.combine(
+                Updates.set("score", rating.getScore()),
+                Updates.set("timeStamp",(int) (System.currentTimeMillis() / 1000L))
+        );
+        UpdateResult result = collection.updateOne(filter, update);
+        return (int)result.getModifiedCount();
     }
 
     public List<Movie> getMovieList(){

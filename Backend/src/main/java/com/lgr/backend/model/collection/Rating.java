@@ -17,14 +17,14 @@ public class Rating {
 
     private int userId;
 
-    private int score;
+    private double score;
 
     private int timeStamp;
 
     public Rating() {
     }
 
-    public Rating(String _id, int movieId, int userId, int score, int timeStamp) {
+    public Rating(String _id, int movieId, int userId, double score, int timeStamp) {
         this._id = _id;
         this.movieId = movieId;
         this.userId = userId;
@@ -56,11 +56,11 @@ public class Rating {
         this.userId = userId;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
 

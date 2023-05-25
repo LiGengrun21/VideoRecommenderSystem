@@ -1,6 +1,7 @@
 package com.lgr.backend.controller;
 
 import com.lgr.backend.model.collection.Movie;
+import com.lgr.backend.model.collection.Rating;
 import com.lgr.backend.service.MovieService;
 import com.lgr.backend.util.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,9 +74,9 @@ public class MovieController {
 
     @Operation(summary = "用户给电影评分",description = "给Rating集合添加新数据")
     @ResponseBody
-    @PutMapping("/rating")
-    public Result rateMovie(@RequestParam("userId") int userId, @RequestParam("movieId") int movieId){
-        return movieService.rateMovie(userId, movieId);
+    @PostMapping("/rating")
+    public Result rateMovie(Rating rating){
+        return movieService.rateMovie(rating);
     }
 
     @Operation(summary = "视频页面展示平均分")
@@ -83,6 +84,13 @@ public class MovieController {
     @GetMapping("/rating")
     public Result getMovieAverageScore(@RequestParam("movieId") int movieId){
         return movieService.getMovieAverageScore(movieId);
+    }
+
+    @Operation(summary = "视频页面展示用户个人评分")
+    @ResponseBody
+    @GetMapping("/user/rating")
+    public Result getMovieScoreByUser(@RequestParam("userId") int userId, @RequestParam("movieId") int movieId){
+        return movieService.getMovieScoreByUser(userId,movieId);
     }
 
     @Operation(summary = "管理员更新一个电影的信息",description = "只能修改文字，不上传文件资源")

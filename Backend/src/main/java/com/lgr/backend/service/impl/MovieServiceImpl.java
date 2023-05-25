@@ -2,6 +2,7 @@ package com.lgr.backend.service.impl;
 
 import com.lgr.backend.model.Display.MovieDisplay;
 import com.lgr.backend.model.collection.Movie;
+import com.lgr.backend.model.collection.Rating;
 import com.lgr.backend.model.collection.User;
 import com.lgr.backend.repository.MovieRepository;
 import com.lgr.backend.service.MovieService;
@@ -49,7 +50,6 @@ public class MovieServiceImpl implements MovieService {
 
         //如果视频字段是空，要添加默认资源
         String video= movie.getVideo();
-//        System.out.println("视频资源"+video);
         if (video==null || video=="" ||video.isEmpty()){
             movie.setVideo("http://localhost:8099/videos/default.mp4");
         }
@@ -139,8 +139,18 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Result rateMovie(int userId, int movieId) {
-        return null;
+    public Result rateMovie(Rating rating) {
+        if (rating==null){
+            return Result.FAIL("不能传入空的Rating对象");
+        }
+        Rating historyRating=movieRepository.getMovieScoreById(rating.getUserId(),rating.getMovieId());
+        if (historyRating==null){
+            //没有评分记录，所以进行添加操作
+            movieRepository.addScore(rating);
+        }
+        //有评分记录，所以进行更新操作
+        movieRepository.updateScore(rating);
+        return Result.SUCCESS(rating);
     }
 
     @Override
@@ -198,5 +208,14 @@ public class MovieServiceImpl implements MovieService {
         movie.setPicture("http://localhost:8099/images/"+fileName);
         movieRepository.updateMovie(movie);
         return Result.SUCCESS(movie);
+    }
+
+    @Override
+    public Result getMovieScoreByUser(int userId, int movieId) {
+        Rating rating=movieRepository.getMovieScoreById(userId,movieId);
+        if (rating==null){
+            return Result.FAIL("没有找到这个用户对这个电影的评分，用户ID:"+userId+"，电影ID:"+movieId);
+        }
+        return Result.SUCCESS(rating);
     }
 }
