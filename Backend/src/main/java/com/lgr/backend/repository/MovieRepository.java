@@ -155,10 +155,10 @@ public class MovieRepository {
      */
     public List<MovieDisplay> getTopRatedRec(){
         MongoCollection<Document> collection = mongoDatabase.getCollection("TopRated");
-        //查询movieId最小的6个影片(movieId, average)
+        //查询average最大的6个影片(movieId, average)
         List<Document> results=collection.aggregate(
                 Arrays.asList(
-                        new Document("$sort", new Document("movieId", 1)),
+                        new Document("$sort", new Document("average", -1)),
                         new Document("$limit", 6)
                 )
         ).into(new ArrayList<>());

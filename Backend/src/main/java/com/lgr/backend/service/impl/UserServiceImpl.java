@@ -72,7 +72,9 @@ public class UserServiceImpl implements UserService {
         //如果返回空或者返回的是自己，说明新邮箱合法
         if (user1==null || user1.getUserId()==user.getUserId()){
             userRepository.update(user);
-            return Result.SUCCESS(user);
+            User newUser=userRepository.getUserById(user.getUserId());
+            System.out.println("新头像地址"+newUser.getAvatar());
+            return Result.SUCCESS(newUser);
         }
         else {
             return Result.FAIL("邮箱已存在，修改用户信息失败");

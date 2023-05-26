@@ -150,7 +150,8 @@ public class MovieServiceImpl implements MovieService {
         }
         //有评分记录，所以进行更新操作
         movieRepository.updateScore(rating);
-        return Result.SUCCESS(rating);
+        //返回评分数据
+        return Result.SUCCESS(movieRepository.getMovieScoreById(rating.getUserId(), rating.getMovieId()));
     }
 
     @Override
